@@ -1,3 +1,4 @@
+// my comment
 // list all databases
 
 printjson(db.getMongo().getDBs());
