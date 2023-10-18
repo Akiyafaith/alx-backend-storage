@@ -45,20 +45,21 @@ class cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: Optional[Callable] = None):
+    def get(self, key: str, fn: Optional[Callable] = None)\
+            -> Union[str, bytes, int, float]:
         """Retrieve data from the cache using the provided key"""
         data = self._redis.get(key)
         if data is not None and fn is not None:
             return fn(data)
         return data
 
-    def get_str(self, key: str):
+    def get_str(self, key: str) -> str:
         """Retrieve a string from the cache"""
-        return self.get(key, fn=lambda d: d.decode("utf-8"))
+        return self.get(key, str)
 
-    def get_int(self, key: str):
+    def get_int(self, key: str) -> int:
         """Retrieve an integer from the cache"""
-        return self.get(key, fn=int)
+        return self.get(key, int)
 
     def replay(self, method: Callable):
         """Display the history of calls for a particular method"""
