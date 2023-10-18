@@ -16,13 +16,16 @@ class cache:
 
     def count_calls(method: Callable) -> Callable:
         """Read from redis"""
+        key = method.__qualname__
+
         @wraps(method)
         def wrapper(self, *args, **kwargs):
-            key = f"{self.__class__.__name__}.{method.__name__}"
+            """wrapper function"""
             self._redis.incr(key)
             return method(self, *args, **kwargs)
 
         return wrapper
+
 
     def call_history(method: Callable) -> Callable:
         """Decorator to store the history of inputs and outputs"""
