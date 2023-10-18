@@ -38,7 +38,7 @@ class cache:
 
         return wrapper
 
-    def store(self, data) -> str:
+    def store(self, data: Union[str, bytes, int, float]) -> str:
         """store the input data in Redis with a randomly generated key
         and return the key"""
         key = str(uuid.uuid4())
