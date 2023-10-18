@@ -59,3 +59,16 @@ class cache:
     def get_int(self, key: str):
         """Retrieve an integer from the cache"""
         return self.get(key, fn=int)
+
+    def replay(self, method: Callable):
+        """Display the history of calls for a particular method"""
+        input_key = "{}:inputs".format(method.__qualname__)
+        output_key = "{}:outputs".format(method.__qualname__)
+
+        inputs = self._redis.lrange(input_key, 0, -1)
+        outputs = self._redis.lrange(output_key, 0, -1)
+
+        print(f"{method.__qualname__} was called {len(inputs)} times:")
+
+        for args, output in zip(inputs, outputs):
+            print(f"{method.__qualname__}{args} -> {output}")
