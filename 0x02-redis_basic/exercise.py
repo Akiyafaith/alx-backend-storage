@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """writing strings to redis"""
+from typing import Callable, Optional
+from functools import wraps
 import redis
 import uuid
-from typing import Callable, Optional
 
 
 class cache:
@@ -12,6 +13,15 @@ class cache:
         and flushing the database"""
         self._redis = redis.Redis()
         self._redis.flushdb()
+
+    def count_calls(method: Callable) -> Callable:
+        @wraps(method)
+        def wrapper(self, *args, **kwargs):
+            key = f"{self.__class__.__name__}.{method.__name__}"
+            self._redis.incr(key)
+            return method(self, *args, **kwargs)
+
+        return wrapper
 
     def store(self, data) -> str:
         """store the input data in Redis with a randomly generated key
