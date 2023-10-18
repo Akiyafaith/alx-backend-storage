@@ -27,6 +27,7 @@ class cache:
     def call_history(method: Callable) -> Callable:
         """Decorator to store the history of inputs and outputs"""
         def wrapper(self, *args, **kwargs):
+            """wrapper function"""
             input_key = "{}:inputs".format(method.__qualname__)
             output_key = "{}:outputs".format(method.__qualname__)
 
