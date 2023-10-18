@@ -15,6 +15,7 @@ class cache:
         self._redis.flushdb()
 
     def count_calls(method: Callable) -> Callable:
+        """Read from redis"""
         @wraps(method)
         def wrapper(self, *args, **kwargs):
             key = f"{self.__class__.__name__}.{method.__name__}"
