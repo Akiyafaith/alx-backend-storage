@@ -26,7 +26,6 @@ class cache:
 
         return wrapper
 
-
     def call_history(method: Callable) -> Callable:
         """Decorator to store the history of inputs and outputs"""
         @wraps(method)
