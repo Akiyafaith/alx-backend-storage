@@ -32,16 +32,15 @@ class cache:
         @wraps(method)
         def wrapper(self, *args, **kwargs):
             """wrapper function"""
-            input_key = "{}:inputs".format(method.__qualname__)
-            output_key = "{}:outputs".format(method.__qualname__)
+            inputt = str(args)
+        self._redis.rpush(method.__qualname__ + ":inputs", inputt)
 
-            self._redis.rpush(input_key, str(args))
-            result = method(self, *args, **kwargs)
-            self._redis.rpush(output_key, result)
+        output = str(method(self, *args, **kwargs))
+        self._redis.rpush(method.__qualname__ + ":outputs", output)
 
-            return result
+        return output
 
-        return wrapper
+    return wrapper
 
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """store the input data in Redis with a randomly generated key
