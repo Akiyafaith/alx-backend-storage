@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-import redis
-import uuid
 """writing strings to redis"""
+#import redis
+import uuid
+
 
 
 class cache:
