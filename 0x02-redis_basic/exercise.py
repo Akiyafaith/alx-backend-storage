@@ -14,12 +14,17 @@ class cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
-    def count_calls(method: Callable) -> Callable:
-        @wraps(method)
+    def call_history(method: Callable) -> Callable:
+        """Decorator to store the history of inputs and outputs"""
         def wrapper(self, *args, **kwargs):
-            key = f"{self.__class__.__name__}.{method.__name__}"
-            self._redis.incr(key)
-            return method(self, *args, **kwargs)
+            input_key = "{}:inputs".format(method.__qualname__)
+            output_key = "{}:outputs".format(method.__qualname__)
+
+            self._redis.rpush(input_key, str(args))
+            result = method(self, *args, **kwargs)
+            self._redis.rpush(output_key, result)
+
+            return result
 
         return wrapper
 
